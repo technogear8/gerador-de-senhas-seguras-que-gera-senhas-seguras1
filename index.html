@@ -1,294 +1,40 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Senhas - Edição Minecraft</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            /* Fonte pixelada para todo o projeto */
-            font-family: 'VT323', monospace; 
-        }
-
-        body {
-            /* Fundo escuro como se fosse pedra/caverna */
-            background-color: #1d1d1d; 
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* O "Inventário" (Cartão principal) */
-        .conteudo {
-            background-color: #c6c6c6; /* Cinza clássico dos menus do Minecraft */
-            padding: 30px;
-            /* Borda clássica 3D do Minecraft */
-            border: 4px solid #000;
-            box-shadow: inset 4px 4px 0px #fff, inset -4px -4px 0px #555;
-            width: 100%;
-            max-width: 450px;
-            image-rendering: pixelated;
-        }
-
-        .conteudo-titulo {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .titulo-principal {
-            font-size: 2.5rem;
-            color: #4a4a4a;
-            text-shadow: 2px 2px 0px #fff; /* Efeito de sombra do jogo */
-        }
-
-        .titulo-secundario {
-            font-size: 1.2rem;
-            color: #555;
-            margin-top: 5px;
-        }
-
-        .conteudo-senha label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1.5rem;
-        }
-
-        /* Campo de texto (Onde a senha aparece) */
-        #campo-senha {
-            width: 100%;
-            padding: 10px;
-            background-color: #000;
-            color: #55ff55; /* Verde XP do Minecraft */
-            border: 4px solid #555;
-            box-shadow: inset 4px 4px 0px #111, inset -4px -4px 0px #888;
-            font-size: 1.8rem;
-            text-align: center;
-            letter-spacing: 2px;
-            outline: none;
-        }
-
-        /* Botões estilo Bloco do Minecraft */
-        button {
-            background-color: #8b8b8b;
-            color: #fff;
-            border: 4px solid #000;
-            box-shadow: inset 4px 4px 0px #c6c6c6, inset -4px -4px 0px #555;
-            font-size: 1.5rem;
-            cursor: pointer;
-            text-shadow: 2px 2px 0px #333;
-        }
-
-        button:active {
-            /* Efeito de botão sendo apertado */
-            box-shadow: inset 4px 4px 0px #555, inset -4px -4px 0px #c6c6c6;
-        }
-
-        #btn-gerar {
-            width: 100%;
-            margin-top: 15px;
-            padding: 10px;
-        }
-
-        .parametro-titulo {
-            font-size: 1.8rem;
-            margin: 20px 0 10px 0;
-            border-bottom: 4px solid #555;
-            padding-bottom: 5px;
-        }
-
-        .parametro-senha__titulo {
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-            margin-top: 15px;
-        }
-
-        .parametro-senha-botoes {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .parametro-senha__botao {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .parametro-senha__texto {
-            font-size: 2rem;
-            background: #000;
-            color: #fff;
-            padding: 0 10px;
-            border: 4px solid #555;
-            min-width: 50px;
-            text-align: center;
-        }
-
-        .parametro-checkboxes label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.4rem;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-
-        /* Indicador de força */
-        .forca-indicador {
-            background-color: #000;
-            border: 4px solid #555;
-            padding: 10px;
-            text-align: center;
-            font-size: 1.5rem;
-            box-shadow: inset 4px 4px 0px #111;
-        }
-    </style>
-</head>
-<body>
-    <section class="conteudo">
-        
-        <div class="conteudo-titulo">
-            <h1 class="titulo-principal">Craftador de Senhas</h1>
-            <h2 class="titulo-secundario">Forje uma senha inquebrável</h2>
-        </div>
-
-        <div class="conteudo-senha">
-            <label for="campo-senha">Sua Senha:</label>
-            <input name="senha" type="text" id="campo-senha" placeholder="Aperte GERAR">
-            <button id="btn-gerar">Gerar Senha</button>
-        </div>
-
-        <div class="parametro">
-            <h3 class="parametro-titulo">Livro de Encantamentos</h3>
-            
-            <div class="parametro-coluna__senha">
-                
-                <div class="parametro-senha">
-                    <h4 class="parametro-senha__titulo">Nível (Tamanho)</h4>
-                    <div class="parametro-senha-botoes">
-                        <button class="parametro-senha__botao" id="btn-menos">-</button>
-                        <p class="parametro-senha__texto" id="tamanho-senha">12</p>
-                        <button class="parametro-senha__botao" id="btn-mais">+</button>
-                    </div>
-                </div>
-
-                <div class="parametro-senha">
-                    <h4 class="parametro-senha__titulo">Materiais (Características)</h4>
-                    <div class="parametro-checkboxes">
-                        <label><input type="checkbox" id="chk-maiusculas" checked> Letras Maiúsculas</label><br>
-                        <label><input type="checkbox" id="chk-minusculas" checked> Letras Minúsculas</label><br>
-                        <label><input type="checkbox" id="chk-numeros" checked> Números</label><br>
-                        <label><input type="checkbox" id="chk-simbolos" checked> Símbolos Especiais</label>
-                    </div>
-                </div>
-
-                <div class="parametro-senha">
-                    <h4 class="parametro-senha__titulo">Durabilidade da Senha</h4>
-                    <div class="forca-indicador">
-                        <p id="texto-forca" style="color: #aaa;">Aguardando geração...</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <script>
-        const campoSenha = document.getElementById('campo-senha');
-        const btnGerar = document.getElementById('btn-gerar');
-        const btnMenos = document.getElementById('btn-menos');
-        const btnMais = document.getElementById('btn-mais');
-        const tamanhoTexto = document.getElementById('tamanho-senha');
-        const textoForca = document.getElementById('texto-forca');
-
-        const chkMaiusculas = document.getElementById('chk-maiusculas');
-        const chkMinusculas = document.getElementById('chk-minusculas');
-        const chkNumeros = document.getElementById('chk-numeros');
-        const chkSimbolos = document.getElementById('chk-simbolos');
-
-        let tamanhoSenhaAtual = 12;
-
-        btnMais.addEventListener('click', () => {
-            if (tamanhoSenhaAtual < 30) {
-                tamanhoSenhaAtual++;
-                tamanhoTexto.textContent = tamanhoSenhaAtual;
-            }
-        });
-
-        btnMenos.addEventListener('click', () => {
-            if (tamanhoSenhaAtual > 4) {
-                tamanhoSenhaAtual--;
-                tamanhoTexto.textContent = tamanhoSenhaAtual;
-            }
-        });
-
-        function gerarSenhaAleatoria() {
-            const maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const minusculas = "abcdefghijklmnopqrstuvwxyz";
-            const numeros = "0123456789";
-            const simbolos = "!@#$%^&*()_+-=[]{}|;:',.<>?";
-
-            let caracteresDisponiveis = "";
-            if (chkMaiusculas.checked) caracteresDisponiveis += maiusculas;
-            if (chkMinusculas.checked) caracteresDisponiveis += minusculas;
-            if (chkNumeros.checked) caracteresDisponiveis += numeros;
-            if (chkSimbolos.checked) caracteresDisponiveis += simbolos;
-
-            if (caracteresDisponiveis === "") {
-                alert("Você precisa selecionar pelo menos um material para craftar a senha!");
-                return;
-            }
-
-            let senhaGerada = "";
-            for (let i = 0; i < tamanhoSenhaAtual; i++) {
-                const indiceAleatorio = Math.floor(Math.random() * caracteresDisponiveis.length);
-                senhaGerada += caracteresDisponiveis[indiceAleatorio];
-            }
-
-            campoSenha.value = senhaGerada;
-            verificarForca(senhaGerada);
-        }
-
-        btnGerar.addEventListener('click', gerarSenhaAleatoria);
-
-        function verificarForca(senha) {
-            let pontos = 0;
-
-            if (senha.length >= 8) pontos++;
-            if (senha.length >= 12) pontos++;
-            if (/[A-Z]/.test(senha)) pontos++;
-            if (/[a-z]/.test(senha)) pontos++;
-            if (/[0-9]/.test(senha)) pontos++;
-            if (/[^A-Za-z0-9]/.test(senha)) pontos++;
-
-            if (senha.length === 0) {
-                textoForca.textContent = "Aguardando geração...";
-                textoForca.style.color = "#aaa";
-            } else if (pontos <= 2) {
-                textoForca.textContent = "Graveto (Fraca)";
-                textoForca.style.color = "#ff5555";
-            } else if (pontos <= 4) {
-                textoForca.textContent = "Ferro (Média)";
-                textoForca.style.color = "#ffff55";
-            } else {
-                textoForca.textContent = "Diamante! (Forte)";
-                textoForca.style.color = "#55ffff";
-            }
-        }
-
-        campoSenha.addEventListener('input', (evento) => {
-            verificarForca(evento.target.value);
-        });
-    </script>
-</body>
-</html>
+    <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Gerador de senhas</title>
+                        </head>
+                            <body>
+                                <section class="conteudo">
+                                    <div class="conteudo-titulo">
+                                        <img src="3208742.png" alt="cadeao fechado">
+                                             <h1 class="titulo-principal">Gerador de Senhas</h1>
+                                                <h2 class="titulo-secundario">Gere uma senha aleatória e segura</h2>
+                                                    </div>
+                                                        <div class="conteudo-senha">
+                                                            <label for="senha">Senha</label>
+                                                                <input name="senha" type="text" id="campo-senha">
+                                                                    </div>
+                                                                        <div class="parametro">
+                                                                            <h3> class="parametro-titulo">Personalie sua senha</h3>
+                                                                                <div class="parametro-coluna__senha">
+                                                                                    <div class="parametro-senha">
+                                                                                        <h4 class="parametro-senha__titulo">Número de caracteres</h4>
+                                                                                            <div class="parametro-senha-botoes">
+                                                                                                <button class="parametro-senha__botao">-</button>
+                                                                                                     <p class="parametro-senha__texto">6</p>
+                                                                                                    <button class="parametro-senha__botao">+</button>
+                                                                                                 </div>
+                                                                                            </div>
+                                                                                        <div class="parametro-senha">
+                                                                                    <h4 class="parametro-senha__titulo">Características da Senha</h4>
+                                                                                </div>
+                                                                            <div class="parametro-senha">
+                                                                         <h4 class="parametro-senha__titulo">Força da Senha</h4>
+                                                                     </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                    </body>
+                                                </html>
