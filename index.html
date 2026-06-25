@@ -9,14 +9,14 @@
     <section class="conteudo">
         
         <div class="conteudo-titulo">
-            <img src="images.jpeg" alt="Ícone do Gerador">
             <h1 class="titulo-principal">Gerador de Senhas</h1>
             <h2 class="titulo-secundario">Gere uma senha aleatória e segura</h2>
         </div>
 
         <div class="conteudo-senha">
             <label for="campo-senha">Senha</label>
-            <input name="senha" type="text" id="campo-senha" readonly>
+            <input name="senha" type="text" id="campo-senha" placeholder="Digite ou clique em Gerar">
+            <button id="btn-gerar" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">Gerar Senha</button>
         </div>
 
         <div class="parametro">
@@ -27,9 +27,9 @@
                 <div class="parametro-senha">
                     <h4 class="parametro-senha__titulo">Número de caracteres</h4>
                     <div class="parametro-senha-botoes">
-                        <button class="parametro-senha__botao">-</button>
+                        <button class="parametro-senha__botao" id="btn-menos">-</button>
                         <p class="parametro-senha__texto" id="tamanho-senha">12</p>
-                        <button class="parametro-senha__botao">+</button>
+                        <button class="parametro-senha__botao" id="btn-mais">+</button>
                     </div>
                 </div>
 
@@ -37,6 +37,7 @@
                     <h4 class="parametro-senha__titulo">Características da Senha</h4>
                     <div class="parametro-checkboxes">
                         <label><input type="checkbox" id="chk-maiusculas" checked> Letras Maiúsculas</label><br>
+                        <label><input type="checkbox" id="chk-minusculas" checked> Letras Minúsculas</label><br>
                         <label><input type="checkbox" id="chk-numeros" checked> Números</label><br>
                         <label><input type="checkbox" id="chk-simbolos" checked> Símbolos</label>
                     </div>
@@ -45,13 +46,105 @@
                 <div class="parametro-senha">
                     <h4 class="parametro-senha__titulo">Força da Senha</h4>
                     <div class="forca-indicador">
-                        <p>Forte</p>
+                        <p id="texto-forca" style="font-weight: bold; color: gray;">Digite ou gere uma senha</p>
                     </div>
                 </div>
 
             </div>
         </div>
-        
     </section>
+
+    <script>
+        // Selecionando os elementos do HTML
+        const campoSenha = document.getElementById('campo-senha');
+        const btnGerar = document.getElementById('btn-gerar');
+        const btnMenos = document.getElementById('btn-menos');
+        const btnMais = document.getElementById('btn-mais');
+        const tamanhoTexto = document.getElementById('tamanho-senha');
+        const textoForca = document.getElementById('texto-forca');
+
+        const chkMaiusculas = document.getElementById('chk-maiusculas');
+        const chkMinusculas = document.getElementById('chk-minusculas');
+        const chkNumeros = document.getElementById('chk-numeros');
+        const chkSimbolos = document.getElementById('chk-simbolos');
+
+        let tamanhoSenhaAtual = 12;
+
+        // 1. Fazer os botões de + e - funcionarem
+        btnMais.addEventListener('click', () => {
+            if (tamanhoSenhaAtual < 30) { // limite máximo de 30
+                tamanhoSenhaAtual++;
+                tamanhoTexto.textContent = tamanhoSenhaAtual;
+            }
+        });
+
+        btnMenos.addEventListener('click', () => {
+            if (tamanhoSenhaAtual > 4) { // limite mínimo de 4
+                tamanhoSenhaAtual--;
+                tamanhoTexto.textContent = tamanhoSenhaAtual;
+            }
+        });
+
+        // 2. Função para GERAR a senha aleatória
+        function gerarSenhaAleatoria() {
+            const maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const minusculas = "abcdefghijklmnopqrstuvwxyz";
+            const numeros = "0123456789";
+            const simbolos = "!@#$%^&*()_+-=[]{}|;:',.<>?";
+
+            let caracteresDisponiveis = "";
+            if (chkMaiusculas.checked) caracteresDisponiveis += maiusculas;
+            if (chkMinusculas.checked) caracteresDisponiveis += minusculas;
+            if (chkNumeros.checked) caracteresDisponiveis += numeros;
+            if (chkSimbolos.checked) caracteresDisponiveis += simbolos;
+
+            if (caracteresDisponiveis === "") {
+                alert("Por favor, selecione pelo menos uma característica para a senha!");
+                return;
+            }
+
+            let senhaGerada = "";
+            for (let i = 0; i < tamanhoSenhaAtual; i++) {
+                const indiceAleatorio = Math.floor(Math.random() * caracteresDisponiveis.length);
+                senhaGerada += caracteresDisponiveis[indiceAleatorio];
+            }
+
+            campoSenha.value = senhaGerada;
+            verificarForca(senhaGerada); // Mede a força da senha gerada
+        }
+
+        btnGerar.addEventListener('click', gerarSenhaAleatoria);
+
+        // 3. Fazer o medidor de força funcionar ao DIGITAR ou ao GERAR
+        function verificarForca(senha) {
+            let pontos = 0;
+
+            if (senha.length >= 8) pontos++;
+            if (senha.length >= 12) pontos++;
+            if (/[A-Z]/.test(senha)) pontos++; // tem maiúscula
+            if (/[a-z]/.test(senha)) pontos++; // tem minúscula
+            if (/[0-9]/.test(senha)) pontos++; // tem número
+            if (/[^A-Za-z0-9]/.test(senha)) pontos++; // tem símbolo
+
+            if (senha.length === 0) {
+                textoForca.textContent = "Digite ou gere uma senha";
+                textoForca.style.color = "gray";
+            } else if (pontos <= 2) {
+                textoForca.textContent = "Fraca 🔴";
+                textoForca.style.color = "red";
+            } else if (pontos <= 4) {
+                textoForca.textContent = "Média 🟡";
+                textoForca.style.color = "orange";
+            } else {
+                textoForca.textContent = "Muito Forte! 🟢";
+                textoForca.style.color = "green";
+            }
+        }
+
+        // Evento que detecta quando você digita no campo para testar a força em tempo real
+        campoSenha.addEventListener('input', (evento) => {
+            verificarForca(evento.target.value);
+        });
+    </script>
 </body>
 </html>
